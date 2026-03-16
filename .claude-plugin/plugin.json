@@ -1,0 +1,10 @@
+{
+  "name": "lore",
+  "description": "Lore: fact injection system for Claude Code — conventions that fire when matching files are touched",
+  "version": "0.3.1",
+  "author": {
+    "name": "gorodulin"
+  },
+  "repository": "https://github.com/gorodulin/lore-claude",
+  "license": "MIT"
+}

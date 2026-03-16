@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "lore": {
+      "command": "bash",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/mcp-server/server.sh"]
+    }
+  }
+}
