@@ -3,15 +3,12 @@
 
 set -euo pipefail
 
-# Check common uv tool bin locations
-for p in "$HOME/.local/bin" "$HOME/.cargo/bin" "/usr/local/bin"; do
-  [ -x "$p/lore-hook-claude" ] && export PATH="$p:$PATH" && break
-done
+source "$(dirname "$0")/../bootstrap/install.sh"
 
-if command -v lore-hook-claude &>/dev/null; then
-  exec lore-hook-claude "$@"
+if _find_lore_mcp; then
+  exec "$LORE_BIN_DIR/lore-hook-claude" "$@"
 fi
 
-# Not installed yet — silently pass through
+# Not installed yet (MCP server will handle it) — pass through
 cat > /dev/null
 exit 0

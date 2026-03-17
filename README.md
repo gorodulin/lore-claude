@@ -41,6 +41,10 @@ To also remove the marketplace:
 claude plugin marketplace remove gorodulin
 ```
 
+## How it works
+
+See [Startup Flow](docs/startup-flow.md) for a diagram of the plugin initialization sequence.
+
 ## Development
 
 Test locally without installing:
@@ -48,3 +52,7 @@ Test locally without installing:
 ```bash
 claude --plugin-dir ./lore-claude
 ```
+
+## Releasing
+
+See [RELEASING.md](RELEASING.md) for the release process.
