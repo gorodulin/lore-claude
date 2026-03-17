@@ -4,45 +4,42 @@ How the lore plugin initializes when a Claude Code session starts.
 
 ```mermaid
 flowchart TD
-    A[Session Start] --> B[bootstrap/install.sh<br/>SessionStart hook]
-    A --> C[mcp-server/server.sh<br/>MCP server init]
+    A[Claude Code<br/>Session Start] --> B[MCP server init<br/>mcp-server/server.sh]
+    A --> H[Hook events<br/>hook/main.sh]
 
-    B --> B1{uv available?}
-    B1 -->|yes| B2[done]
-    B1 -->|no| B3[install uv via curl]
-    B3 --> B2
+    %% MCP server path
+    B --> B1[source bootstrap/install.sh<br/>ensure_lore_installed]
+    B1 --> B2{lore-mcp<br/>found?}
 
-    C --> C1[source bootstrap/install.sh]
-    C1 --> C2{lore-mcp found?}
+    B2 -->|no| B3[install lore]
+    B3 --> B6[exec lore-mcp]
 
-    C2 -->|yes| C3{version matches<br/>LORE_VERSION?}
-    C3 -->|yes| C6[exec lore-mcp]
-    C3 -->|no| C4[upgrade lore]
-    C4 --> C6
+    B2 -->|yes| B4{version matches<br/>LORE_VERSION pin?}
+    B4 -->|yes| B6
+    B4 -->|no| B5[upgrade lore]
+    B5 --> B6
 
-    C2 -->|no| C5[install lore]
-    C5 --> C6
-
-    subgraph installer [Install / Upgrade]
+    subgraph installer [Install / Upgrade fallback chain]
         direction TB
-        D1{uv?} -->|yes| D2[uv tool install]
-        D1 -->|no| D3{pipx?}
+        D1{uv available?} -->|yes| D2[uv tool install]
+        D1 -->|no| D3{pipx available?}
         D3 -->|yes| D4[pipx install]
-        D3 -->|no| D5[python3 -m venv<br/>~/.lore/venv]
+        D3 -->|no| D5[python3 -m venv<br/>~/.lore/venv + pip install]
     end
 
-    C4 --> installer
-    C5 --> installer
+    B3 --> installer
+    B5 --> installer
 
-    A --> E[hook/main.sh<br/>PreToolUse + other events]
-    E --> E1{lore-hook-claude<br/>found?}
-    E1 -->|yes| E2[exec lore-hook-claude]
-    E1 -->|no| E3[pass through<br/>no-op]
+    %% Hook path
+    H --> H1[source bootstrap/install.sh<br/>_find_lore_mcp]
+    H1 --> H2{lore-hook-claude<br/>found?}
+    H2 -->|yes| H3[exec lore-hook-claude]
+    H2 -->|no| H4[pass through / no-op]
 ```
 
 ## Key points
 
-- **MCP server** handles install/upgrade — it runs before `lore-mcp` starts, so no running process is replaced
-- **Bootstrap hook** only ensures `uv` is present (lightweight)
-- **Hook proxy** delegates if `lore-hook-claude` exists, otherwise silently passes through
-- **Installer priority**: `uv` > `pipx` > `python3 venv`
+- **MCP server** (`server.sh`) is the only place that installs or upgrades lore — it calls `ensure_lore_installed` before starting `lore-mcp`
+- **Hook proxy** (`hook/main.sh`) only checks if `lore-hook-claude` exists — it does **not** install. If lore isn't installed yet, it silently passes through
+- **Installer fallback**: `uv` > `pipx` > `python3 -m venv` (no external dependencies required)
+- **Version pin**: `LORE_VERSION` file controls which lore version is installed. Upgrade only triggers when the pin changes (via plugin update)

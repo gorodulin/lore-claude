@@ -5,12 +5,6 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/bootstrap/install.sh\"",
-            "timeout": 120,
-            "statusMessage": "Lore: checking installation..."
-          },
-          {
-            "type": "command",
             "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hook/main.sh\"",
             "timeout": 5
           }
