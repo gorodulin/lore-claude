@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Bootstrap: ensures lore is installed at the pinned version.
-# Called by mcp-server/server.sh and hook/main.sh.
+# Called by scripts/mcp-server.sh and scripts/hook-proxy.sh.
 # Tries uv, then pipx, then falls back to a self-managed venv.
 #
 # Usage: source this script, then call ensure_lore_installed

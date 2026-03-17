@@ -4,11 +4,11 @@ How the lore plugin initializes when a Claude Code session starts.
 
 ```mermaid
 flowchart TD
-    A[Claude Code<br/>Session Start] --> B[MCP server init<br/>mcp-server/server.sh]
-    A --> H[Hook events<br/>hook/main.sh]
+    A[Claude Code<br/>Session Start] --> B[MCP server init<br/>scripts/mcp-server.sh]
+    A --> H[Hook events<br/>scripts/hook-proxy.sh]
 
     %% MCP server path
-    B --> B1[source bootstrap/install.sh<br/>ensure_lore_installed]
+    B --> B1[source scripts/install.sh<br/>ensure_lore_installed]
     B1 --> B2{lore-mcp<br/>found?}
 
     B2 -->|no| B3[install lore]
@@ -31,15 +31,15 @@ flowchart TD
     B5 --> installer
 
     %% Hook path
-    H --> H1[source bootstrap/install.sh<br/>_find_lore_mcp]
+    H --> H1[source scripts/install.sh<br/>_find_lore_mcp]
     H1 --> H2{lore-hook-claude<br/>found?}
     H2 -->|yes| H3[exec lore-hook-claude]
-    H2 -->|no| H4[pass through / no-op]
+    H2 -->|no| H4[discard input, exit 0]
 ```
 
 ## Key points
 
-- **MCP server** (`server.sh`) is the only place that installs or upgrades lore — it calls `ensure_lore_installed` before starting `lore-mcp`
-- **Hook proxy** (`hook/main.sh`) only checks if `lore-hook-claude` exists — it does **not** install. If lore isn't installed yet, it silently passes through
+- **MCP server** (`scripts/mcp-server.sh`) is the only place that installs or upgrades lore — it calls `ensure_lore_installed` before starting `lore-mcp`
+- **Hook proxy** (`scripts/hook-proxy.sh`) only checks if `lore-hook-claude` exists — it does **not** install. If lore isn't installed yet, it silently discards input
 - **Installer fallback**: `uv` > `pipx` > `python3 -m venv` (no external dependencies required)
 - **Version pin**: `LORE_VERSION` file controls which lore version is installed. Upgrade only triggers when the pin changes (via plugin update)

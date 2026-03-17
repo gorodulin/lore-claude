@@ -3,7 +3,7 @@
 
 set -euo pipefail
 
-source "$(dirname "$0")/../bootstrap/install.sh"
+source "$(dirname "$0")/install.sh"
 
 ensure_lore_installed
 

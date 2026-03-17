@@ -43,7 +43,7 @@ git push origin main
 claude plugin marketplace update gorodulin
 ```
 
-On next session start, `server.sh` detects the version mismatch and upgrades lore before starting the MCP server.
+On next session start, `scripts/mcp-server.sh` detects the version mismatch and upgrades lore before starting the MCP server.
 
 ## How the upgrade works
 

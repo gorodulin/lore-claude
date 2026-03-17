@@ -3,7 +3,7 @@
 
 set -euo pipefail
 
-source "$(dirname "$0")/../bootstrap/install.sh"
+source "$(dirname "$0")/install.sh"
 
 if _find_lore_mcp; then
   exec "$LORE_BIN_DIR/lore-hook-claude" "$@"

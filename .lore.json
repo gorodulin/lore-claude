@@ -1,0 +1,7 @@
+{
+  "6otetrbELU": {
+    "fact": "Bump version in plugin.json when changing plugin code — Claude Code caches by version, so users won't get updates otherwise.",
+    "incl": ["g:**/*"],
+    "tags": ["kind:convention"]
+  }
+}
