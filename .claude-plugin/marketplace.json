@@ -11,7 +11,7 @@
       "name": "lore",
       "source": "./",
       "description": "Lore: fact injection system for Claude Code — conventions that fire when matching files are touched",
-      "version": "0.3.1"
+      "version": "0.4.0"
     }
   ]
 }
