@@ -1,6 +1,6 @@
 {
   "6otetrbELU": {
-    "fact": "Bump version in plugin.json when changing plugin code — Claude Code caches by version, so users won't get updates otherwise.",
+    "fact": "Bump version in plugin.json and marketplace.json when changing plugin code — Claude Code caches by version, so users won't get updates otherwise. Follow RELEASING.md for the full procedure — steps differ for lore-version updates vs plugin-only changes.",
     "incl": ["g:**/*"],
     "tags": ["kind:convention"]
   }

@@ -22,9 +22,11 @@ Restart Claude Code (or run `/reload-plugins`) to activate.
 
 ## Update
 
+Update is two steps — refresh the marketplace catalog, then update the plugin:
+
 ```bash
-claude plugin marketplace update gorodulin
-claude plugin update lore@gorodulin
+claude plugin marketplace update gorodulin    # pull latest catalog
+claude plugin update lore@gorodulin           # install new version
 ```
 
 Restart to apply changes.
