@@ -70,6 +70,20 @@ Command-event targets (fire on Bash, Task, WebFetch, WebSearch):
 - `hook:read`, `hook:edit`, `hook:write`, `hook:bash`, `hook:agent`, `hook:webfetch`, `hook:websearch` — restrict which tool events surface the fact. Without hook tags, the fact fires on any event whose available targets satisfy the incl groups.
 - `kind:convention`, `kind:design`, `kind:commitment` — informational labels, no behavioral effect.
 
+### CMD-META on Bash commands
+
+Every Bash `PreToolUse` event must carry a trailing CMD-META block — a shell-comment trailer describing the command. Missing or malformed blocks are denied by the gate with instructions in the deny reason. Example:
+
+```
+git push origin main  # ---CMD-META-BEGIN---
+# tools: git push
+# endpoints: github.com:org/repo
+# flags: mutates, network, irreversible, blast_remote
+# ---CMD-META-END---
+```
+
+Required key: `tools`. Optional: `endpoints`, `flags`, `affected_paths`. `flags` values come from a closed vocabulary (state / safety / execution / cost / trust / provenance) — the deny reason lists it when the gate fires.
+
 ### Template variables
 
 Fact text can include `{{variable}}` placeholders — resolved at display time from the triggering file path.
