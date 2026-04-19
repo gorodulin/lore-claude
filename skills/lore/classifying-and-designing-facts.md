@@ -43,22 +43,29 @@ Redis-based locking" is a **fact** (cross-cutting constraint visible from no sin
 - **Lead with the imperative or constraint.** "Never import Path — use os.path functions" not "We have a convention where..."
 - **Name specific entities.** Specific nouns, specific verbs.
 - **Cut rationale unless it changes behavior.** If the rule is absolute, drop the explanation. If the agent needs the "why" to decide edge cases, keep it.
+- **Use template variables for context.** `{{filepath}}`, `{{folder}}`, `{{basename}}` etc. are resolved from the triggering file at display time — prefer `"{{filepath}}: no default exports"` over a hardcoded path. See SKILL.md Quick reference for the full list.
 
 ### Matcher precision
 
-**Glob** — use the narrowest scope that covers the convention:
+**Path glob (`p:`)** — use the narrowest scope that covers the convention:
 
-- `g:**/*.py` — every Python file (convention-level)
-- `g:src/api/**/*.ts` — one subsystem
-- `g:src/api/auth.ts` — one specific file
+- `p:**/*.py` — every Python file (convention-level)
+- `p:src/api/**/*.ts` — one subsystem
+- `p:src/api/auth.ts` — one specific file
 
-**Regex** — match file *content* that relates to the constraint. The regex both triggers the fact and tells the agent what code pattern it's about:
+**Content regex (`c:`)** — match file *content* that relates to the constraint. The regex both triggers the fact and tells the agent what code pattern it's about:
 
-- `r:import Path` — catches a specific bad import
-- `r:load_facts|locate_fact` — catches code crossing a module boundary
-- `r:(?i)claude` with `skip: g:src/claude/**/*` — catches boundary violations outside the allowed module
+- `c:import Path` — catches a specific bad import
+- `c:load_facts|locate_fact` — catches code crossing a module boundary
+- `c:(?i)claude` with `skip: p:src/claude/**/*` — catches boundary violations outside the allowed module
 
-Combine glob + regex to narrow precisely: the fact fires only when the file path matches AND its content contains the pattern.
+Combine path + content to narrow precisely: the fact fires only when the file path matches AND its content contains the pattern.
+
+**Description regex (`d:`)** and **command regex (`x:`)** target command-world events (Bash / Task / WebFetch / WebSearch). Use `d:` for intent/query text, `x:` for raw command strings on Bash:
+
+- `d:(?i)deploy|infra` — fires on any event whose description/query mentions deploy or infra
+- `x:\|\s*sh` — catches pipe-to-shell patterns (`curl … | sh`)
+- `x:rm -rf` — catches destructive rm regardless of tool name
 
 ### Advisory vs blocking
 
